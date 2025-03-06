@@ -1,7 +1,9 @@
+import Header from "./components/Header/index";
+
 function App() {
 	return (
 		<>
-			<h1>Olá Mundo</h1>
+			<Header />
 		</>
 	);
 }
