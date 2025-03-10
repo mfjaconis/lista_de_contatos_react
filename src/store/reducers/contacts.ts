@@ -43,9 +43,18 @@ const contactsSlice = createSlice({
 				state.itens.push(newContact);
 			}
 		},
+		edit: (state, action: PayloadAction <Contacts>) =>{
+			const indexContact = state.itens.findIndex(
+				(contact) => contact.id === action.payload.id
+			)
+
+			if(indexContact >= 0) {
+				state.itens[indexContact] = action.payload
+			}
+		}
 	},
 });
 
-export const { register, remove } = contactsSlice.actions;
+export const { register, remove, edit } = contactsSlice.actions;
 
 export default contactsSlice.reducer;

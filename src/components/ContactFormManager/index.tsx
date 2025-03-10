@@ -3,10 +3,17 @@ import { useDispatch, useSelector } from "react-redux";
 
 import type { RootReducer } from "../../store";
 import { register, remove } from "../../store/reducers/contacts";
+import type ConctactClass from "../../models/Contacts";
 
-function ContactFormManager() {
+type Porps = ConctactClass;
+
+function ContactFormManager({
+	name: nameOrigin,
+	
+}) {
 	const { itens } = useSelector((state: RootReducer) => state.contact);
 	const dispatch = useDispatch();
+
 
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
