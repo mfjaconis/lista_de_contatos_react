@@ -8,7 +8,8 @@ type ContactsStates = {
 
 const initialState: ContactsStates = {
 	itens: [
-		{
+		{	
+			id:1,
 			name: "Matheus",
 			email: "matheusjaconis@gmail.com",
 			telephone: "11 987927573",
@@ -19,8 +20,11 @@ const initialState: ContactsStates = {
 const contactsSlice = createSlice({
 	name: "contacts",
 	initialState,
-	reducers: {
-		register: (state, action: PayloadAction<Contacts>) => {
+	reducers: {	
+		remove: (state, action: PayloadAction<number>) => {
+		state.itens = [...state.itens.filter((contact) => contact.id !== action.payload) ]
+	},
+		register: (state, action: PayloadAction<Omit<Contacts, 'id'>>) => {
 			const contactExist = state.itens.find(
 				(contact) =>
 					contact.name.toLowerCase() === action.payload.name.toLowerCase() ||
@@ -32,13 +36,16 @@ const contactsSlice = createSlice({
 			if (contactExist) {
 				alert("Esse contato já existe");
 			} else {
-				const newContact = { ...action.payload };
+				const lastContact = state.itens[state.itens.length -1]
+
+				const newContact = { ...action.payload, id: lastContact ? lastContact.id + 1 : 1};
+				
 				state.itens.push(newContact);
 			}
 		},
 	},
 });
 
-export const { register } = contactsSlice.actions;
+export const { register, remove } = contactsSlice.actions;
 
 export default contactsSlice.reducer;

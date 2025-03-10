@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import type { RootReducer } from "../../store";
-import { register } from "../../store/reducers/contacts";
+import { register, remove } from "../../store/reducers/contacts";
 
 function ContactFormManager() {
 	const { itens } = useSelector((state: RootReducer) => state.contact);
@@ -49,8 +49,8 @@ function ContactFormManager() {
 							<li key={c.name}>
 								{c.name} - {c.email} - {c.telephone}
 							</li>
-							<button type="submit">Remover</button>
-							<button type="submit">Editar</button>
+							<button  onClick={() => dispatch(remove(c.id))}>Remover</button>
+							<button>Editar</button>
 						</>
 					))}
 				</ul>
