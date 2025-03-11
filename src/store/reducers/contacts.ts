@@ -12,7 +12,7 @@ const initialState: ContactsStates = {
 			id: 1,
 			name: "Matheus",
 			email: "matheusjaconis@gmail.com",
-			telephone: "11 987927573",
+			telephone: "(11) 98792-7573",
 		},
 	],
 };

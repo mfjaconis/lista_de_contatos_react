@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import type ConctactClass from "../../models/Contacts";
+import type ContactClass from "../../models/Contacts";
 import type { RootReducer } from "../../store";
-import { register, remove } from "../../store/reducers/contacts";
+import { edit, register, remove } from "../../store/reducers/contacts";
 import { normalizePhoneNumber } from './../../Masks/masks';
 
-type Porps = ConctactClass;
 
 function ContactFormManager() {
 	const { itens } = useSelector((state: RootReducer) => state.contact);
@@ -16,6 +15,7 @@ function ContactFormManager() {
 	const [email, setEmail] = useState("");
 	const [telephone, setTelephone] = useState("");
 	const [error, setError] = useState("");
+	const [editingContact, setEditingContact] = useState<ContactClass | null>(null);
 
 	const registerContact = (e: React.FormEvent) => {
 		e.preventDefault();
@@ -25,8 +25,17 @@ function ContactFormManager() {
 			return;
 		  }
 
-		dispatch(register({ name, email, telephone }));
+		  if (editingContact) {
+			dispatch(edit({ ...editingContact, name, email, telephone }));
+		} else {
+			dispatch(register({ name, email, telephone }));
+		}
+
 		setError("");
+		setName("");
+		setEmail("");
+		setTelephone("");
+		setEditingContact(null);
 	};
 
 	const handleTelephoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,6 +46,13 @@ function ContactFormManager() {
 		  setError("");
 		}
 	  };
+
+	  const handleEdit = (contact: ContactClass) => {
+		setName(contact.name);
+		setEmail(contact.email);
+		setTelephone(contact.telephone);
+		setEditingContact(contact);
+	};
 
 	return (
 		<>
@@ -64,7 +80,7 @@ function ContactFormManager() {
 						required
 					/>
 					{error && <div style={{ color: "red" }}>{error}</div>}
-					<button type="submit">Cadastrar</button>
+					<button type="submit">{editingContact ? "Salvar alterações" : "Cadastrar"}</button>
 				</form>
 
 				<ul>
@@ -74,7 +90,7 @@ function ContactFormManager() {
 								{c.name} - {c.email} - {c.telephone}
 							</li>
 							<button onClick={() => dispatch(remove(c.id))}>Remover</button>
-							<button>Editar</button>
+							<button onClick={() => handleEdit(c)}>Editar</button>
 						</>
 					))}
 				</ul>
