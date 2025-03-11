@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import type ContactClass from "../../models/Contacts";
 import type { RootReducer } from "../../store";
 import { edit, register, remove } from "../../store/reducers/contacts";
-import { normalizePhoneNumber } from './../../Masks/masks';
-
+import { normalizePhoneNumber } from "./../../Masks/masks";
+import { Buttton, Form, List, Main, Span } from "./styles";
 
 function ContactFormManager() {
 	const { itens } = useSelector((state: RootReducer) => state.contact);
@@ -14,24 +14,30 @@ function ContactFormManager() {
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [telephone, setTelephone] = useState("");
-	const [error, setError] = useState("");
-	const [editingContact, setEditingContact] = useState<ContactClass | null>(null);
+	const [editingContact, setEditingContact] = useState<ContactClass | null>(
+		null,
+	);
 
 	const registerContact = (e: React.FormEvent) => {
 		e.preventDefault();
 
 		if (telephone.length < 14 || telephone.length > 15) {
-			setError("Telefone inválido! Deve ter 10 ou 11 dígitos.");
+			alert("Telefone inválido! Deve ter 10 ou 11 dígitos.");
 			return;
-		  }
+		}
 
-		  if (editingContact) {
+		const nameParts = name.trim().split(" ");
+		if (nameParts.length < 2) {
+			alert("Por favor, insira pelo menos um sobrenome.");
+			return;
+		}
+
+		if (editingContact) {
 			dispatch(edit({ ...editingContact, name, email, telephone }));
 		} else {
 			dispatch(register({ name, email, telephone }));
 		}
 
-		setError("");
 		setName("");
 		setEmail("");
 		setTelephone("");
@@ -41,13 +47,9 @@ function ContactFormManager() {
 	const handleTelephoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const formattedPhone = normalizePhoneNumber(e.target.value);
 		setTelephone(formattedPhone);
-		
-		if (formattedPhone.length >= 14 && formattedPhone.length <= 15) {
-		  setError("");
-		}
-	  };
+	};
 
-	  const handleEdit = (contact: ContactClass) => {
+	const handleEdit = (contact: ContactClass) => {
 		setName(contact.name);
 		setEmail(contact.email);
 		setTelephone(contact.telephone);
@@ -56,8 +58,8 @@ function ContactFormManager() {
 
 	return (
 		<>
-			<main>
-				<form onSubmit={registerContact}>
+			<Main>
+				<Form onSubmit={registerContact}>
 					<input
 						type="text"
 						placeholder="Nome completo"
@@ -79,22 +81,27 @@ function ContactFormManager() {
 						onChange={handleTelephoneChange}
 						required
 					/>
-					{error && <div style={{ color: "red" }}>{error}</div>}
-					<button type="submit">{editingContact ? "Salvar alterações" : "Cadastrar"}</button>
-				</form>
+					<Buttton type="submit">
+						{editingContact ? "Salvar alterações" : "Cadastrar"}
+					</Buttton>
+				</Form>
 
-				<ul>
+				<List>
 					{itens.map((c) => (
 						<>
 							<li key={c.name}>
-								{c.name} - {c.email} - {c.telephone}
+								<Span>Nome: </Span>
+								{c.name} - <Span>E-mail: </Span> {c.email} -{" "}
+								<Span>Telefone</Span> {c.telephone}
+								<Buttton onClick={() => dispatch(remove(c.id))}>
+									Remover
+								</Buttton>
+								<Buttton onClick={() => handleEdit(c)}>Editar</Buttton>
 							</li>
-							<button onClick={() => dispatch(remove(c.id))}>Remover</button>
-							<button onClick={() => handleEdit(c)}>Editar</button>
 						</>
 					))}
-				</ul>
-			</main>
+				</List>
+			</Main>
 		</>
 	);
 }

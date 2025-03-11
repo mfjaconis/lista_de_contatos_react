@@ -10,7 +10,7 @@ const initialState: ContactsStates = {
 	itens: [
 		{
 			id: 1,
-			name: "Matheus",
+			name: "Matheus Fernandes Jaconis",
 			email: "matheusjaconis@gmail.com",
 			telephone: "(11) 98792-7573",
 		},
